@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:pokemon/pokedex.dart';
+import 'package:pokemon/pokemon_detail.dart';
 
 class PokemonList extends StatefulWidget {
   @override
@@ -45,13 +46,43 @@ class _PokemonListState extends State<PokemonList> {
           } else if (gelenPokedex.connectionState == ConnectionState.done) {
             return GridView.count(
               crossAxisCount: 2,
-              children: gelenPokedex.data.pokemon.map((e) {return Text(e.name);}).toList(),
+              children: gelenPokedex.data.pokemon.map((poke) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>PokemonDetail(pokemon: poke)));
+                  },
+                  child: Hero(
+                    tag: poke.img,
+                    child: Card(
+                      elevation: 3,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Expanded(
+                            child: Container(
+                              height: 120,
+                              child: FadeInImage.assetNetwork(
+                                  placeholder: "assets/giphy.gif",
+                                  image: poke.img),
+                            ),
+                          ),
+                          Text(
+                            poke.name,
+                            style: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
             );
           }
         },
       ),
     );
   }
-
-
 }
